@@ -7,6 +7,7 @@ use yii\filters\VerbFilter;
 use Yii;
 use yii\rbac\Item;
 use yii\rbac\Rule;
+use yii\web\UnauthorizedHttpException;
 
 class RbacController extends BaseAdminController
 {
@@ -14,14 +15,40 @@ class RbacController extends BaseAdminController
      * {@inheritdoc}
      */
 
+    public function beforeAction($action)
+    {
+
+        /*$items['role']='管理员';
+        //$items['permission']='访问后台';
+        $items['user_id']=Yii::$app->user->identity->getId();
+
+        $this->addUserRole($items);*/
+
+        $action=Yii::$app->controller->id.'/'.Yii::$app->controller->action->id;
+        //$this->createPermission($action);
+       /* $items['role']='管理员';
+        $items['permission']=$action;
+        $this->addChildToRole($items);
+        return true;
+        $action = Yii::$app->controller->action->id;*/
+        if(Yii::$app->user->can($action)){
+            return true;
+        }else{
+            throw new UnauthorizedHttpException('对不起，您现在还没获此操作的权限');
+        }
+    }
+
     public function actionIndex()
     {
+        $redis=Yii::$app->redis;
+        var_dump($redis->get('login'));
         //$this->createPermission('访问后台');
         //$this->createRole('管理员');
-        $items['role']='管理员';
-        $items['permission']='访问后台';
+        /*$items['role']='管理员';
+        //$items['permission']='访问后台';
+        $items['user_id']=Yii::$app->user->identity->getId();
 
-
+        $this->addUserRole($items);*/
         return $this->render('index');
     }
 
@@ -44,7 +71,17 @@ class RbacController extends BaseAdminController
         $auth->add($role);
     }
 
-    //给角色添加权限
+
+    //用户添加角色
+    public function addUserRole($items)
+    {
+        $auth = Yii::$app->authManager;
+        $role = $auth->createRole($items['role']);                //创建角色对象
+        $user_id = $items['user_id'];                                             //获取用户id，此处假设用户id=1
+        $auth->assign($role, $user_id);                           //添加对应关系
+    }
+
+        //给角色添加权限
     public function addChildToRole($items)
     {
         $auth = Yii::$app->authManager;
@@ -53,15 +90,5 @@ class RbacController extends BaseAdminController
         $auth->addChild($parent, $child);                           //添加对应关系
     }
 
-    public function add($object)
-    {
-        if ($object instanceof Item) {
-            return $this->addItem($object);
-        } elseif ($object instanceof Rule) {
-            return $this->addRule($object);
-        } else {
-            throw new InvalidParamException("Adding unsupported object type.");
-        }
-    }
 
 }

@@ -50,6 +50,13 @@ $config = [
             'assignmentTable' => 'auth_assignment',
             'itemChildTable' => 'auth_item_child',
         ],
+        'redis'=>[
+            'class'=>'yii\redis\Connection',
+            'hostname'=>'localhost',
+            'port'=>6739,
+            'database'=>0
+        ]
+
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

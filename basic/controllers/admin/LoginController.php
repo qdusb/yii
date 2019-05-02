@@ -13,8 +13,7 @@ class LoginController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        $user=Yii::$app->session->get('admin');
-        if($user){
+        if(Yii::$app->user->identity->getId()) {
             $this->redirect(Url::toRoute(['admin/order/index']));
         }
         return parent::beforeAction($action);
@@ -25,18 +24,16 @@ class LoginController extends \yii\web\Controller
         return $this->render('index');
     }
 
-
     public function actionLogin()
     {
         $request=Yii::$app->getRequest();
         $name=$request->post('name');
         $pass=$request->post('pass');
 
-        $query=User::find()->where(array('name'=>$name,'password'=>md5('abc'.$pass.'def')));
-        $user=$query->one();
+        $identity = User::findOne(['name' => $name,'password'=>md5('abc'.$pass.'def')]);
+        Yii::$app->user->login($identity);
 
-        if($user){
-            Yii::$app->session->set('admin',$name);
+        if(Yii::$app->user->identity){
             $this->redirect(Url::toRoute(['admin/order/index']));
         }else{
             $this->redirect(Url::toRoute(['admin/login']));

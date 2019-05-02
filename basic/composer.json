@@ -30,7 +30,7 @@
         "yiichina/yii2-icheck":  "*",
         "yiichina/yii2-chart": "*",
         "yiichina/yii2-switch": "*",
-        "dektrium/yii2-rbac": "dev-master"
+        "dektrium/yii2-rbac": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.1.0",
