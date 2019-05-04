@@ -17,9 +17,7 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'AHedk-JfJvO1a-01exSu4FrD2Mv8GdJC',
         ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
+
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
@@ -50,21 +48,49 @@ $config = [
             'assignmentTable' => 'auth_assignment',
             'itemChildTable' => 'auth_item_child',
         ],
-        'redis'=>[
-            'class'=>'yii\redis\Connection',
-            'hostname'=>'localhost',
-            'port'=>6739,
-            'database'=>0
-        ]
 
-        /*
-        'urlManager' => [
+        'redis' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => 'localhost',
+            'port' => 6379,
+            'database' => 0,
+        ],
+        'cache' => [
+             //'class' => 'yii\caching\FileCache',
+            'class' => 'yii\redis\Cache',
+        ],
+        'session' => [
+            'name' => 'oframe-backend',
+            'timeout' => 60 * 60 * 2,
+            //'name' => 'advanced-frontend',
+            'class' => 'yii\redis\Session'
+        ],
+
+       /* 'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['wechat'],
+                    'extraPatterns' => [
+                        'GET valid' => 'valid',
+                    ],
+                ],
+            ],
+        ],*/
+
+
+        'urlManager' => [
+            'enablePrettyUrl' => true,//隐藏index.php
+            'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'rules' => [
+                
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

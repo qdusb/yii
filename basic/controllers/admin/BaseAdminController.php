@@ -20,8 +20,7 @@ class BaseAdminController extends Controller
 
     public function beforeAction($action)
     {
-        $user=Yii::$app->session->get('admin');
-        if(!$user){
+        if(!Yii::$app->user->identity){
             $this->redirect(Url::toRoute(['admin/login/index']));
         }
         return parent::beforeAction($action);

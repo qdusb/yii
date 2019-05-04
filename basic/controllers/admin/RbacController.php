@@ -2,11 +2,10 @@
 
 namespace app\controllers\admin;
 
-use yii\base\InvalidParamException;
-use yii\filters\VerbFilter;
+
+use app\models\LoginRecord;
 use Yii;
-use yii\rbac\Item;
-use yii\rbac\Rule;
+use yii\helpers\Url;
 use yii\web\UnauthorizedHttpException;
 
 class RbacController extends BaseAdminController
@@ -18,6 +17,7 @@ class RbacController extends BaseAdminController
     public function beforeAction($action)
     {
 
+        return true;
         /*$items['role']='管理员';
         //$items['permission']='访问后台';
         $items['user_id']=Yii::$app->user->identity->getId();
@@ -31,17 +31,21 @@ class RbacController extends BaseAdminController
         $this->addChildToRole($items);
         return true;
         $action = Yii::$app->controller->action->id;*/
+
         if(Yii::$app->user->can($action)){
             return true;
         }else{
-            throw new UnauthorizedHttpException('对不起，您现在还没获此操作的权限');
+            $this->redirect(Url::toRoute(['admin/login']));
+            return false;
+            //throw new UnauthorizedHttpException('对不起，您现在还没获此操作的权限');
         }
+
     }
 
     public function actionIndex()
     {
-        $redis=Yii::$app->redis;
-        var_dump($redis->get('login'));
+
+
         //$this->createPermission('访问后台');
         //$this->createRole('管理员');
         /*$items['role']='管理员';
@@ -52,6 +56,36 @@ class RbacController extends BaseAdminController
         return $this->render('index');
     }
 
+    public function actionRedis(){
+        $redis=Yii::$app->redis;
+        $redis->set('user', '123456');
+
+        $redis->expire('user', 50);
+    }
+
+    public function actionCache(){
+        $cache=Yii::$app->cache;
+       // $cache->set('user','1423456');
+        echo $cache->get('user');
+    }
+    public function actionSession(){
+        $session=Yii::$app->session;
+        //$session->set('user','123456');
+        echo $session->get('user');
+    }
+
+    public function actionRecord(){
+
+        $record=new LoginRecord();
+        $record->uid=3;
+        $record->created_at=time();
+        $record->name='york';
+        $record->session=Yii::$app->session->getId();
+        //$record->save();
+        $r= LoginRecord::findOne(1);
+        echo $r->session;
+
+    }
 
     //创建权限
     public function createPermission($name)

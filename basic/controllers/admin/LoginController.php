@@ -13,7 +13,7 @@ class LoginController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if(Yii::$app->user->identity->getId()) {
+        if(Yii::$app->user->identity) {
             $this->redirect(Url::toRoute(['admin/order/index']));
         }
         return parent::beforeAction($action);
