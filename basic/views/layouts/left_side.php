@@ -8,7 +8,7 @@
 	>
 		<ul class="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
 			<li class="m-menu__item  m-menu__item--active" aria-haspopup="true" >
-				<a  href="<{$http_root_www}>?con=admin&ctl=index" class="m-menu__link ">
+				<a  href="<?=\yii\helpers\Url::toRoute(['admin/order/index'])?>" class="m-menu__link ">
 					<i class="m-menu__link-icon flaticon-line-graph"></i>
                     <span class="m-menu__link-title">
                         <span class="m-menu__link-wrap">
